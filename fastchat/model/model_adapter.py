@@ -2258,6 +2258,43 @@ class YuanAdapter(BaseModelAdapter):
         return get_conv_template("yuan")
 
 
+class IbmLabradoriteAdapter:
+    """The base and the default model adapter."""
+    print("IBM BigCode Labradorite adapter")
+
+    use_fast_tokenizer = True
+
+    def match(self, model_path: str):
+        return "labradorite" in model_path.lower()
+
+    def load_model(self, model_path: str, from_pretrained_kwargs: dict):
+        revision = from_pretrained_kwargs.get("revision", "main")
+        try:
+            print(f"Loading using {self.__class__.__name__}")
+            # Changed from torch.bloat16 to torch.float16
+            model = AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True)
+            # model = AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True, torch_dtype=torch.float16)
+            tokenizer = AutoTokenizer.from_pretrained(model_path)
+            # tokenizer = AutoTokenizer.from_pretrained(model_path, padding_side="left")
+            model.eval()
+        except Exception as e:
+            raise ValueError(f"AutoModelForCausalLM is not found or unable to load the model: {e}")
+        else:
+            return model, tokenizer
+
+    def load_compress_model(self, model_path, device, torch_dtype, revision="main"):
+        return load_compress_model(
+            model_path,
+            device,
+            torch_dtype,
+            use_fast=self.use_fast_tokenizer,
+            revision=revision,
+        )
+
+    def get_default_conv_template(self, model_path: str) -> Conversation:
+        return get_conv_template("labradorite")
+
+
 # Note: the registration order matters.
 # The one registered earlier has a higher matching priority.
 register_model_adapter(PeftModelAdapter)
@@ -2347,6 +2384,7 @@ register_model_adapter(SolarAdapter)
 register_model_adapter(SteerLMAdapter)
 register_model_adapter(LlavaAdapter)
 register_model_adapter(YuanAdapter)
+register_model_adapter(IbmLabradoriteAdapter)
 
 # After all adapters, try the default base adapter.
 register_model_adapter(BaseModelAdapter)
