@@ -877,7 +877,7 @@ if __name__ == "__main__":
     # Launch the demo
     demo = build_demo(models)
     demo.queue(
-        default_concurrency_limit=args.concurrency_count,
+        concurrency_count=args.concurrency_count,
         status_update_rate=10,
         api_open=False,
     ).launch(
