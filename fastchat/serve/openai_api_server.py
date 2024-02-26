@@ -182,6 +182,7 @@ async def check_length(request, prompt, max_tokens, worker_addr):
 
 def check_requests(request) -> Optional[JSONResponse]:
     # Check all params
+    logger.info(f"{request}")
     if request.max_tokens is not None and request.max_tokens <= 0:
         return create_error_response(
             ErrorCode.PARAM_OUT_OF_RANGE,
@@ -346,6 +347,7 @@ async def get_gen_params(
         "echo": echo,
         "stop_token_ids": conv.stop_token_ids,
     }
+    logger.info(f"gen_params --->{gen_params}")
 
     if len(images) > 0:
         gen_params["images"] = images

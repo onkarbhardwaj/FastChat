@@ -75,7 +75,7 @@ def generate_stream(
     prompt = params["prompt"]
     len_prompt = len(prompt)
     temperature = float(params.get("temperature", 1.0))
-    repetition_penalty = float(params.get("repetition_penalty", 1.0))
+    repetition_penalty = float(params.get("repetition_penalty", 1.2))
     top_p = float(params.get("top_p", 1.0))
     top_k = int(params.get("top_k", -1))  # -1 means disable
     max_new_tokens = int(params.get("max_new_tokens", 256))
@@ -85,6 +85,7 @@ def generate_stream(
     stop_token_ids = params.get("stop_token_ids", None) or []
     if tokenizer.eos_token_id not in stop_token_ids:
         stop_token_ids.append(tokenizer.eos_token_id)
+    print(f"Inference-->\n: prompt {prompt}, temperature {temperature}, repetition_penalty {repetition_penalty}, max_new_tokens {max_new_tokens}, top_p {top_p}, top_k {top_k}, stop_str {stop_str}, stop_token_ids {stop_token_ids}")
 
     logits_processor = prepare_logits_processor(
         temperature, repetition_penalty, top_p, top_k
