@@ -1,6 +1,7 @@
 """
 A model worker that executes the model.
 """
+
 import argparse
 import base64
 import gc
@@ -74,6 +75,7 @@ class ModelWorker(BaseModelWorker):
         )
 
         logger.info(f"Loading the model {self.model_names} on worker {worker_id} ...")
+        logger.info(f"Worker concurrency set to {self.limit_worker_concurrency}")
         self.model, self.tokenizer = load_model(
             model_path,
             revision=revision,

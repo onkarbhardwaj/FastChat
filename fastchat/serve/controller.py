@@ -2,6 +2,7 @@
 A controller manages distributed workers.
 It sends worker addresses to clients.
 """
+
 import argparse
 import asyncio
 import dataclasses
@@ -12,6 +13,8 @@ import os
 import time
 from typing import List, Union
 import threading
+import random
+import copy
 
 from fastapi import FastAPI, Request
 from fastapi.responses import StreamingResponse
@@ -190,7 +193,10 @@ class Controller:
         elif self.dispatch_method == DispatchMethod.SHORTEST_QUEUE:
             worker_names = []
             worker_qlen = []
-            for w_name, w_info in self.worker_info.items():
+            worker_info_copy = list(self.worker_info.items())
+            random.shuffle(worker_info_copy)
+            # for w_name, w_info in self.worker_info.items():
+            for w_name, w_info in worker_info_copy:
                 if model_name in w_info.model_names:
                     worker_names.append(w_name)
                     worker_qlen.append(w_info.queue_length / w_info.speed)
