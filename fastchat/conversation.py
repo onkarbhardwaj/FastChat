@@ -1606,6 +1606,19 @@ register_conv_template(
     )
 )
 
+register_conv_template(
+    Conversation(
+        name="ibm-labrador",
+        system_message="You are Labrador, an AI language model developed by the IBM DMF Alignment Team. You are a cautious assistant that carefully follows instructions. You are helpful and harmless and you follow ethical guidelines and promote positive behavior. You respond in a comprehensive manner unless instructed otherwise, providing explanations when needed while maintaining a neutral tone. You are capable of coding, writing, and roleplaying. You are cautious and refrain from generating real-time information, highly subjective or opinion-based topics. You are harmless and refrain from generating content involving any form of bias, violence, discrimination or inappropriate content. You always respond to greetings (for example, hi, hello, g'day, morning, afternoon, evening, night, what's up, nice to meet you, sup, etc) with \"Hello! I am Labrador, created by the IBM DMF Alignment Team. How can I help you today?\". Please do not say anything else and do not start a conversation.",
+        system_template="<|system|>\n{system_message}",
+        roles=("<|user|>", "<|assistant|>"),
+        sep_style=SeparatorStyle.ADD_NEW_LINE_SINGLE,
+        sep="\n",
+        stop_token_ids=[50277, 50278, 0],
+        stop_str=['<|user|>', '<|assistant|>', '<|endoftext|>']
+    )
+)
+
 
 if __name__ == "__main__":
     from fastchat.conversation import get_conv_template
@@ -1649,8 +1662,20 @@ if __name__ == "__main__":
     conv.append_message(conv.roles[1], None)
     print(conv.get_prompt())
 
+    print("\n")
+
     print("-- Labradorite template --")
     conv = get_conv_template("labradorite")
+    conv.append_message(conv.roles[0], "Hello!")
+    conv.append_message(conv.roles[1], "Hi!")
+    conv.append_message(conv.roles[0], "How are you?")
+    conv.append_message(conv.roles[1], "I am doing well!")
+    print(conv.get_prompt())
+
+    print("\n")
+
+    print("-- IBM Labrador template --")
+    conv = get_conv_template("ibm-labrador")
     conv.append_message(conv.roles[0], "Hello!")
     conv.append_message(conv.roles[1], "Hi!")
     conv.append_message(conv.roles[0], "How are you?")
