@@ -74,7 +74,7 @@ class VLLMWorker(BaseModelWorker):
         top_k = params.get("top_k", -1.0)
         presence_penalty = float(params.get("presence_penalty", 0.0))
         frequency_penalty = float(params.get("frequency_penalty", 0.0))
-        repetition_penalty = float(params.get("repetition_penalty", 0.0))
+        repetition_penalty = float(params.get("repetition_penalty", 1.0))
         max_new_tokens = params.get("max_new_tokens", 256)
         stop_str = params.get("stop", None)
         stop_token_ids = params.get("stop_token_ids", None) or []
