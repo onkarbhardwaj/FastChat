@@ -2258,6 +2258,7 @@ class YuanAdapter(BaseModelAdapter):
         return get_conv_template("yuan")
 
 
+# class IbmAutoModelAdapter(BaseModelAdapter):
 class IbmLabradoriteAdapter(BaseModelAdapter):
     """The base and the default model adapter."""
 
@@ -2271,7 +2272,7 @@ class IbmLabradoriteAdapter(BaseModelAdapter):
         return get_conv_template("labradorite")
 
 
-class IbmModelBigCodeAdapter:
+class IbmModelBigCodeAdapter(BaseModelAdapter):
     """The base and the default model adapter."""
     print("Trying IBM BigCode adapter")
 
@@ -2306,7 +2307,7 @@ class IbmModelBigCodeAdapter:
         return get_conv_template("ibm-labrador")
 
 
-class IbmModelMegatronAdapter:
+class IbmModelMegatronAdapter(BaseModelAdapter):
     """The base and the default model adapter."""
     print("Trying IBM Megatron adapter")
 

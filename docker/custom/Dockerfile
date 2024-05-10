@@ -1,6 +1,6 @@
 
 ARG DEBIAN_FRONTEND=noninteractive
-FROM nvidia/cuda:12.2.0-runtime-ubuntu20.04
+FROM nvidia/cuda:12.4.0-runtime-ubuntu20.04
 
 RUN DEBIAN_FRONTEND=noninteractive \
   apt-get update \
