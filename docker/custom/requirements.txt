@@ -1,4 +1,5 @@
-pydantic==1.10.13
+# pydantic==1.10.13
+pydantic
 vllm
-git+https://${GH_TOKEN_PUB}@github.com/onkarbhardwaj/FastChat.git@lmsys-megatron#egg=fschat[fschat,model_worker]
+git+https://${GH_TOKEN_PUB}@github.com/onkarbhardwaj/FastChat.git@vd-megatron-merge-main#egg=fschat[fschat,model_worker]
 git+https://${GH_TOKEN}@github.ibm.com/ai-models-architectures/IBM-models.git
