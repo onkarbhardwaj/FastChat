@@ -14,3 +14,6 @@ ARG GH_TOKEN
 ARG GH_TOKEN_PUB
 RUN pip3 install --upgrade setuptools pip
 RUN python3.9 -m pip install --no-cache-dir -r requirements.txt
+
+# For latest vllm to work
+RUN python3.9 -m pip install --force-reinstall numpy==1.26.4
