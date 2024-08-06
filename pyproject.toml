@@ -13,9 +13,22 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
 ]
 dependencies = [
-    "aiohttp", "fastapi", "httpx", "markdown2[all]", "nh3", "numpy",
-    "prompt_toolkit>=3.0.0", "pydantic<3,>=2.0.0", "pydantic-settings", "psutil", "requests", "rich>=10.0.0",
-    "shortuuid", "tiktoken", "uvicorn",
+    "aiohttp",
+    "fastapi",
+    "httpx",
+    "markdown2[all]", 
+    "nh3", 
+    "numpy",
+    "prompt_toolkit>=3.0.0", 
+    "pydantic<3,>=2.0.0", 
+    "pydantic-settings", 
+    "psutil", 
+    "requests", 
+    "rich>=10.0.0",
+    "shortuuid", 
+    "tiktoken", 
+    "uvicorn",
+    "dolomite_engine@git+https://github.com/ibm-granite/dolomite-engine"
 ]
 
 [project.optional-dependencies]
