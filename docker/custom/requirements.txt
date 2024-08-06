@@ -1,9 +1,11 @@
 pydantic==1.10.13
 vllm
 
-git+https://github.com/ibm-granite/dolomite-engine.git
 git+https://${GH_TOKEN_PUB}@github.com/onkarbhardwaj/FastChat.git@vd-test#egg=fschat[fschat,model_worker]
-# git+https://${GH_TOKEN}@github.ibm.com/ai-models-architectures/IBM-models.git
+git+https://${GH_TOKEN}@github.ibm.com/ai-models-architectures/IBM-models.git
+# git+https://github.com/ibm-granite/dolomite-engine.git
+git+https://${GH_TOKEN_PUB}@github.com/vedem1192/dolomite-engine.git
 
 
+# flash-attn
 # flash-attn

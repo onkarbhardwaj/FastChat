@@ -28,7 +28,6 @@ dependencies = [
     "shortuuid", 
     "tiktoken", 
     "uvicorn",
-    "dolomite_engine@git+https://github.com/ibm-granite/dolomite-engine"
 ]
 
 [project.optional-dependencies]
