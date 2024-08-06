@@ -2558,7 +2558,7 @@ class IbmModelDolomiteAdapter(BaseModelAdapter):
         try:
             model = GPTDolomiteForCausalLM.from_pretrained(
                 model_path,
-                attn_implementation="flash_attention_2",
+                # attn_implementation="flash_attention_2",
                 use_padding_free_transformer=False,
                 trust_remote_code=True, # Might need to be removed
                 torch_dtype=torch.bfloat16 # Might need to be removed

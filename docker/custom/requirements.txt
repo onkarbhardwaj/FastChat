@@ -8,4 +8,3 @@ git+https://${GH_TOKEN_PUB}@github.com/vedem1192/dolomite-engine.git
 
 
 # flash-attn
-# flash-attn
