@@ -88,7 +88,12 @@ OPENAI_MODEL_LIST = (
 )
 
 from fastchat.model.base_model_adapter import BaseModelAdapter
-from fastchat.model.custom_adapters import IbmLabradoriteAdapter, IbmModelBigCodeAdapter, IbmModelMegatronAdapter
+from fastchat.model.custom_adapters import (
+    IbmLabradoriteAdapter, 
+    IbmModelBigCodeAdapter, 
+    IbmModelMegatronAdapter,
+    IbmModelDolomiteAdapter
+)
 
 
 # A global registry for all model adapters
@@ -2498,6 +2503,7 @@ register_model_adapter(RekaAdapter)
 register_model_adapter(SmaugChatAdapter)
 register_model_adapter(Llama3Adapter)
 
+register_model_adapter(IbmModelDolomiteAdapter)
 register_model_adapter(IbmLabradoriteAdapter)
 register_model_adapter(IbmModelBigCodeAdapter)
 register_model_adapter(IbmModelMegatronAdapter)
