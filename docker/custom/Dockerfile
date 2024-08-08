@@ -1,7 +1,6 @@
 
 ARG DEBIAN_FRONTEND=noninteractive
-# FROM nvidia/cuda:12.4.0-runtime-ubuntu20.04
-FROM nvidia/cuda:12.5.0-runtime-ubuntu20.04
+FROM nvidia/cuda:12.5.0-devel-ubuntu20.04
 
 RUN DEBIAN_FRONTEND=noninteractive \
   apt-get update \
@@ -15,3 +14,8 @@ ARG GH_TOKEN
 ARG GH_TOKEN_PUB
 RUN pip3 install --upgrade setuptools pip
 RUN python3.9 -m pip install --no-cache-dir -r requirements.txt
+
+# For Dolomite Engine
+RUN python3.9 -m pip install flash-attn --no-build-isolation
+RUN python3.9 -m pip install tokenizers==0.19.1
+
