@@ -1,4 +1,4 @@
-pydantic==1.10.13
+pydantic
 vllm
 
 git+https://${GH_TOKEN_PUB}@github.com/onkarbhardwaj/FastChat.git@dolomite#egg=fschat[fschat,model_worker]
