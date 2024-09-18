@@ -23,6 +23,8 @@ from fastchat.serve.model_worker import (
     worker_id,
 )
 from fastchat.utils import get_context_length, is_partial_stop
+import logging
+uvicorn_logger = logging.getLogger('uvicorn.error')
 
 
 app = FastAPI()
@@ -52,7 +54,7 @@ class VLLMWorker(BaseModelWorker):
         )
 
         logger.info(
-            f"Loading the model {self.model_names} on worker {worker_id}, worker type: vLLM worker..."
+            f"+++Loading the model {self.model_names} on worker {worker_id}, worker type: vLLM worker..."
         )
         self.tokenizer = llm_engine.engine.tokenizer
         # This is to support vllm >= 0.2.7 where TokenizerGroup was introduced
@@ -68,6 +70,9 @@ class VLLMWorker(BaseModelWorker):
         self.call_ct += 1
 
         context = params.pop("prompt")
+        
+        logger.info(f"~~Prompt~~ \n{context}")
+
         request_id = params.pop("request_id")
         temperature = float(params.get("temperature", 1.0))
         top_p = float(params.get("top_p", 1.0))
