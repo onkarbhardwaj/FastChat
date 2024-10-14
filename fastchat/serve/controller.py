@@ -345,6 +345,16 @@ async def worker_api_generate_stream(request: Request):
     generator = controller.worker_api_generate_stream(params)
     return StreamingResponse(generator)
 
+# :: HERE -- added to map to vllm models
+@app.post("/worker_create_chat_completions")
+async def worker_api_create_chat_completion(request: Request):
+    params = await request.json()
+    print(params)
+    # PROXY REQUEST TO WORKER/v1/chat/completions
+    # generator = controller.worker_api_generate_stream(params)
+    # return StreamingResponse(generator)
+    return "IN DEVELOPMENT"
+
 
 @app.post("/worker_get_status")
 async def worker_api_get_status(request: Request):
