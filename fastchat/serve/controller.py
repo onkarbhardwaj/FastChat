@@ -286,7 +286,7 @@ class Controller:
             for chunk in response.iter_lines(decode_unicode=False, delimiter=b"\0"):
                 if chunk:
                     yield chunk + b"\0"
-        try:
+        except:
             response = requests.post(
                 worker_addr + "/v1/completions",
                 json=params,
