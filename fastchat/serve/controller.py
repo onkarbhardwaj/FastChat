@@ -276,17 +276,17 @@ class Controller:
         if not worker_addr:
             yield self.handle_no_worker(params)
 
+        # try:
+        #     response = requests.post(
+        #         worker_addr + "/worker_generate_stream",
+        #         json=params,
+        #         stream=True,
+        #         timeout=WORKER_API_TIMEOUT,
+        #     )
+        #     for chunk in response.iter_lines(decode_unicode=False, delimiter=b"\0"):
+        #         if chunk:
+        #             yield chunk + b"\0"
         try:
-            response = requests.post(
-                worker_addr + "/worker_generate_stream",
-                json=params,
-                stream=True,
-                timeout=WORKER_API_TIMEOUT,
-            )
-            for chunk in response.iter_lines(decode_unicode=False, delimiter=b"\0"):
-                if chunk:
-                    yield chunk + b"\0"
-        except:
             response = requests.post(
                 worker_addr + "/v1/completions",
                 json=params,
