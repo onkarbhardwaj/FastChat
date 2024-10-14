@@ -270,7 +270,9 @@ class Controller:
         }
 
     def worker_api_generate_stream(self, params):
+        print("+ + + +  IN worker_api_generate_stream  + + + +")
         worker_addr = self.get_worker_address(params["model"])
+        print("+ + + +  WORKER ADDR  + + + +", worker_addr )
         if not worker_addr:
             yield self.handle_no_worker(params)
 
@@ -284,7 +286,18 @@ class Controller:
             for chunk in response.iter_lines(decode_unicode=False, delimiter=b"\0"):
                 if chunk:
                     yield chunk + b"\0"
+        try:
+            response = requests.post(
+                worker_addr + "/v1/completions",
+                json=params,
+                stream=True,
+                timeout=WORKER_API_TIMEOUT,
+            )
+            for chunk in response.iter_lines(decode_unicode=False, delimiter=b"\0"):
+                if chunk:
+                    yield chunk + b"\0"
         except requests.exceptions.RequestException as e:
+            print(e)
             yield self.handle_worker_timeout(worker_addr)
 
 
