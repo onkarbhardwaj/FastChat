@@ -270,11 +270,7 @@ class Controller:
         }
 
     def worker_api_generate_stream(self, params):
-        print("+ + + +  IN worker_api_generate_stream  + + + +")
         worker_addr = self.get_worker_address(params["model"])
-        print("+ + + +  WORKER ADDR  + + + +", worker_addr )
-        print("endpoint ", "http://" + worker_addr + "/v1/completions")
-
         if not worker_addr:
             yield self.handle_no_worker(params)
 
@@ -288,21 +284,49 @@ class Controller:
             for chunk in response.iter_lines(decode_unicode=False, delimiter=b"\0"):
                 if chunk:
                     yield chunk + b"\0"
-        except Exception as e:
-            print(e)
-            try:
-                response = requests.post(
-                    "http://" + worker_addr + "/v1/completions",
-                    json=params,
-                    stream=True,
-                    timeout=WORKER_API_TIMEOUT,
-                )
-                for chunk in response.iter_lines(decode_unicode=False, delimiter=b"\0"):
-                    if chunk:
-                        yield chunk + b"\0"
-            except requests.exceptions.RequestException as e:
-                print(e)
-                yield self.handle_worker_timeout(worker_addr)
+        except requests.exceptions.RequestException as e:
+            yield self.handle_worker_timeout(worker_addr)
+    
+
+    def worker_api_completions(self, params):
+        print("+ + + +  IN worker_api_completions  + + + +")
+        worker_addr = self.get_worker_address(params["model"])
+        print("+ + + +  WORKER ADDR  + + + +", worker_addr )
+
+        if not worker_addr:
+            yield self.handle_no_worker(params)
+
+        try:
+            print("COPMLETIONS PARAMS", params)
+            response = requests.post(
+                worker_addr + "/v1/completions",
+                json=params
+            )
+            for chunk in response.iter_lines(decode_unicode=False, delimiter=b"\0"):
+                if chunk:
+                    yield chunk + b"\0"
+        except requests.exceptions.RequestException as e:
+            yield self.handle_worker_timeout(worker_addr)
+    
+    def worker_api_chat_completions(self, params):
+        print("+ + + +  IN worker_api_chat_completions  + + + +")
+        worker_addr = self.get_worker_address(params["model"])
+        print("+ + + +  WORKER ADDR  + + + +", worker_addr )
+
+        if not worker_addr:
+            yield self.handle_no_worker(params)
+
+        try:
+            print("CHAT COMLETIONS PARAMS", params)
+            response = requests.post(
+                worker_addr + "/v1/chat/completions",
+                json=params
+            )
+            for chunk in response.iter_lines(decode_unicode=False, delimiter=b"\0"):
+                if chunk:
+                    yield chunk + b"\0"
+        except requests.exceptions.RequestException as e:
+            yield self.handle_worker_timeout(worker_addr)
 
 
 app = FastAPI()
@@ -363,14 +387,17 @@ async def worker_api_generate_stream(request: Request):
     return StreamingResponse(generator)
 
 # :: HERE -- added to map to vllm models
-@app.post("/worker_create_chat_completions")
-async def worker_api_create_chat_completion(request: Request):
+@app.post("/v1/completions")
+async def worker_api_completions(request: Request):
     params = await request.json()
-    print(params)
-    # PROXY REQUEST TO WORKER/v1/chat/completions
-    # generator = controller.worker_api_generate_stream(params)
-    # return StreamingResponse(generator)
-    return "IN DEVELOPMENT"
+    generator = controller.worker_api_completions(params)
+    return StreamingResponse(generator)
+
+@app.post("/v1/chat/completions")
+async def worker_api_chat_completions(request: Request):
+    params = await request.json()
+    generator = controller.worker_api_chat_completions(params)
+    return StreamingResponse(generator)
 
 
 @app.post("/worker_get_status")
