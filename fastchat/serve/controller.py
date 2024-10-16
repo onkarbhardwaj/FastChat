@@ -295,18 +295,23 @@ class Controller:
 
         if not worker_addr:
             yield self.handle_no_worker(params)
+        
+        return requests.post(
+            worker_addr + "/v1/completions",
+            json=params
+        )
 
-        try:
-            print("COPMLETIONS PARAMS", params)
-            response = requests.post(
-                worker_addr + "/v1/completions",
-                json=params
-            )
-            for chunk in response.iter_lines(decode_unicode=False, delimiter=b"\0"):
-                if chunk:
-                    yield chunk + b"\0"
-        except requests.exceptions.RequestException as e:
-            yield self.handle_worker_timeout(worker_addr)
+        # try:
+        #     print("COPMLETIONS PARAMS", params)
+        #     response = requests.post(
+        #         worker_addr + "/v1/completions",
+        #         json=params
+        #     )
+        #     for chunk in response.iter_lines(decode_unicode=False, delimiter=b"\0"):
+        #         if chunk:
+        #             yield chunk + b"\0"
+        # except requests.exceptions.RequestException as e:
+        #     yield self.handle_worker_timeout(worker_addr)
     
     def worker_api_chat_completions(self, params):
         print("+ + + +  IN worker_api_chat_completions  + + + +")
