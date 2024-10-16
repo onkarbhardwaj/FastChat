@@ -2,7 +2,7 @@
 A controller manages distributed workers.
 It sends worker addresses to clients.
 """
-
+from openai import OpenAI
 import argparse
 import asyncio
 import dataclasses
@@ -297,22 +297,34 @@ class Controller:
             yield self.handle_no_worker(params)
 
         try:
-            print("COPMLETIONS PARAMS", params)
-            response = requests.post(
-                worker_addr + "/v1/completions",
-                json=params,
-                stream=True
+            client = OpenAI(
+                # defaults to os.environ.get("OPENAI_API_KEY")
+                api_key="default",
+                base_url=worker_addr + "/v1",
             )
-            # for chunk in response.iter_lines(decode_unicode=False, delimiter=b"\0"):
-            #     if chunk:
-            #         yield chunk + b"\0"
-            for chunk in response.iter_lines(chunk_size=8192, decode_unicode=False, delimiter=b"\0"):
-                if chunk:
-                    data = json.loads(chunk.decode("utf-8"))
-                    output = data["text"]
-                    yield output
-        except requests.exceptions.RequestException as e:
+            completion = client.completions.create(prompt="Who are you?", model=model, stream=True)
+            for chunk in completion:
+                yield chunk.choices[0].text
+
+        except Exception as e:
             yield self.handle_worker_timeout(worker_addr)
+
+        # try:
+        #     print("COPMLETIONS PARAMS", params)
+        #     response = requests.post(
+        #         worker_addr + "/v1/completions",
+        #         json=params
+        #     )
+        #     # for chunk in response.iter_lines(decode_unicode=False, delimiter=b"\0"):
+        #     #     if chunk:
+        #     #         yield chunk + b"\0"
+        #     for chunk in response.iter_lines(chunk_size=8192, decode_unicode=False, delimiter=b"\0"):
+        #         if chunk:
+        #             data = json.loads(chunk.decode("utf-8"))
+        #             output = data["text"]
+        #             yield output
+        # except requests.exceptions.RequestException as e:
+        #     yield self.handle_worker_timeout(worker_addr)
 
             
     
