@@ -298,11 +298,10 @@ class Controller:
 
         try:
             client = OpenAI(
-                # defaults to os.environ.get("OPENAI_API_KEY")
                 api_key="default",
                 base_url=worker_addr + "/v1",
             )
-            completion = client.completions.create(prompt="Who are you?", model=model, stream=True)
+            completion = client.completions.create(prompt=params["prompt"], model=params["model"], stream=True)
             for chunk in completion:
                 yield chunk.choices[0].text
 
