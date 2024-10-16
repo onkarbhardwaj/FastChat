@@ -28,6 +28,7 @@ dependencies = [
     "shortuuid", 
     "tiktoken", 
     "uvicorn",
+    "openai"
 ]
 
 [project.optional-dependencies]
