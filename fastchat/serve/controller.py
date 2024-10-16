@@ -300,14 +300,21 @@ class Controller:
             print("COPMLETIONS PARAMS", params)
             response = requests.post(
                 worker_addr + "/v1/completions",
-                json=params
+                json=params,
+                stream=True
             )
-            for chunk in response.iter_lines(decode_unicode=False, delimiter=b"\0"):
-                print("CHUNK", chunk)
+            # for chunk in response.iter_lines(decode_unicode=False, delimiter=b"\0"):
+            #     if chunk:
+            #         yield chunk + b"\0"
+            for chunk in response.iter_lines(chunk_size=8192, decode_unicode=False, delimiter=b"\0"):
                 if chunk:
-                    yield chunk + b"\0"
+                    data = json.loads(chunk.decode("utf-8"))
+                    output = data["text"]
+                    yield output
         except requests.exceptions.RequestException as e:
             yield self.handle_worker_timeout(worker_addr)
+
+            
     
     def worker_api_chat_completions(self, params):
         print("+ + + +  IN worker_api_chat_completions  + + + +")
