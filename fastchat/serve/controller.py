@@ -292,7 +292,9 @@ class Controller:
         print("+ + + +  IN worker_api_completions  + + + +")
         worker_addr = self.get_worker_address(params["model"])
         print("+ + + +  WORKER ADDR  + + + +", worker_addr )
-
+        print("+ + + +  PARAMS  + + + +", params )
+        print("+ + + +  PARAMS  + + + +", **params )
+        
         if not worker_addr:
             yield self.handle_no_worker(params)
 
@@ -315,6 +317,7 @@ class Controller:
         print("+ + + +  IN worker_api_chat_completions  + + + +")
         worker_addr = self.get_worker_address(params["model"])
         print("+ + + +  WORKER ADDR  + + + +", worker_addr )
+        print("+ + + +  PARAMS  + + + +", params )
 
         if not worker_addr:
             yield self.handle_no_worker(params)
