@@ -304,8 +304,8 @@ class Controller:
             )
             completion = client.completions.create(**params)
             for chunk in completion:
-                yield chunk
-                # yield chunk.choices[0].text
+                # yield chunk
+                yield chunk.choices[0].text
 
         except Exception as e:
             yield self.handle_worker_timeout(worker_addr)
@@ -328,8 +328,8 @@ class Controller:
             )
             completion = client.chat.completions.create(**params)
             for chunk in completion:
-                yield chunk
-                # yield chunk.choices[0].delta.content
+                # yield chunk
+                yield chunk.choices[0].delta.content
 
         except requests.exceptions.RequestException as e:
             yield self.handle_worker_timeout(worker_addr)
@@ -399,6 +399,7 @@ async def worker_api_completions(request: Request):
     generator = controller.worker_api_completions(params)
     return StreamingResponse(generator)
 
+# :: HERE -- added to map to vllm models
 @app.post("/v1/chat/completions")
 async def worker_api_chat_completions(request: Request):
     params = await request.json()
