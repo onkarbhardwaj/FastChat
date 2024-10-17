@@ -294,23 +294,6 @@ class Controller:
         print("+ + + +  WORKER ADDR  + + + +", worker_addr )
         print("+ + + +  PARAMS  + + + +", params )
         
-       
-        p = {
-            'model': params['model'],
-            'prompt': params['prompt'],
-            'echo': params['echo'],
-            'max_tokens': params['max_tokens'],
-            'stop': params['stop'],
-            'temperature': params['temperature'],
-            'top_p': params['top_p'],
-            'stream': params['stream'],
-            'extra_body': {
-                'repetition_penalty': params['repetition_penalty'],
-                'top_k': params['top_k']
-            }
-        }
-        print("+ + + +  PARAMS  + + + +", p )
-        
         if not worker_addr:
             yield self.handle_no_worker(params)
 
@@ -319,10 +302,10 @@ class Controller:
                 api_key="default",
                 base_url=worker_addr + "/v1",
             )
-            # completion = client.completions.create(prompt=params["prompt"], model=params["model"], stream=True)
-            completion = client.completions.create(**p)
+            completion = client.completions.create(**params)
             for chunk in completion:
-                yield chunk.choices[0].text
+                yield chunk
+                # yield chunk.choices[0].text
 
         except Exception as e:
             yield self.handle_worker_timeout(worker_addr)
@@ -345,7 +328,8 @@ class Controller:
             )
             completion = client.chat.completions.create(**params)
             for chunk in completion:
-                yield chunk.choices[0].delta.content
+                yield chunk
+                # yield chunk.choices[0].delta.content
 
         except requests.exceptions.RequestException as e:
             yield self.handle_worker_timeout(worker_addr)
