@@ -293,7 +293,23 @@ class Controller:
         worker_addr = self.get_worker_address(params["model"])
         print("+ + + +  WORKER ADDR  + + + +", worker_addr )
         print("+ + + +  PARAMS  + + + +", params )
-        print("+ + + +  PARAMS  + + + +", **params )
+        
+       
+        p = {
+            'model': params['model'],
+            'prompt': params['prompt'],
+            'echo': params['echo'],
+            'max_tokens': params['max_tokens'],
+            'stop': params['stop'],
+            'temperature': params['temperature'],
+            'top_p': params['top_p'],
+            'stream': params['stream'],
+            'extra_body': {
+                'repetition_penalty': params['repetition_penalty'],
+                'top_k': params['top_k']
+            }
+        }
+        print("+ + + +  PARAMS  + + + +", p )
         
         if not worker_addr:
             yield self.handle_no_worker(params)
@@ -304,7 +320,7 @@ class Controller:
                 base_url=worker_addr + "/v1",
             )
             # completion = client.completions.create(prompt=params["prompt"], model=params["model"], stream=True)
-            completion = client.completions.create(**params)
+            completion = client.completions.create(**p)
             for chunk in completion:
                 yield chunk.choices[0].text
 
