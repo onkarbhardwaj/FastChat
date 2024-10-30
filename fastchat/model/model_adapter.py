@@ -87,14 +87,6 @@ OPENAI_MODEL_LIST = (
     "gpt-4o-2024-05-13",
 )
 
-# from fastchat.model.base_model_adapter import BaseModelAdapter
-# from fastchat.model.custom_adapters import (
-#     IbmLabradoriteAdapter, 
-#     IbmModelBigCodeAdapter, 
-#     IbmModelMegatronAdapter,
-#     IbmModelDolomiteAdapter
-# )
-
 class BaseModelAdapter:
     """The base and the default model adapter."""
 
