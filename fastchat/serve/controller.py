@@ -419,14 +419,14 @@ async def worker_api_generate_stream(request: Request):
     return StreamingResponse(generator)
 
 # :: HERE -- added to map to vllm models
-@app.post("/v1/completions")
+@app.post("/v2/completions")
 async def worker_api_completions(request: Request):
     params = await request.json()
     generator = controller.worker_api_completions(params)
     return StreamingResponse(generator)
 
 # :: HERE -- added to map to vllm models
-@app.post("/v1/chat/completions")
+@app.post("/v2/chat/completions")
 async def worker_api_chat_completions(request: Request):
     params = await request.json()
     generator = controller.worker_api_chat_completions(params)
@@ -435,8 +435,8 @@ async def worker_api_chat_completions(request: Request):
 
 
 # :: HERE -- added to map to vllm models
-@app.post("/v2/completions")
-async def worker_api_completions_v2(request: Request):
+@app.post("/v1/completions")
+async def worker_api_completions_v1(request: Request):
     params = await request.json()
     endpoint = "/v1/completions"
     return StreamingResponse(
@@ -446,8 +446,8 @@ async def worker_api_completions_v2(request: Request):
     )
 
 # :: HERE -- added to map to vllm models
-@app.post("/v2/chat/completions")
-async def worker_api_chat_completions_v2(request: Request):
+@app.post("/v1/chat/completions")
+async def worker_api_chat_completions_v1(request: Request):
     params = await request.json()
     endpoint = "/v1/chat/completions"
     return StreamingResponse(
