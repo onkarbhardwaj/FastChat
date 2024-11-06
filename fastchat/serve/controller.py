@@ -15,6 +15,7 @@ from typing import List, Union
 import threading
 import random
 import copy
+import httpx
 
 from fastapi import FastAPI, Request
 from fastapi.responses import StreamingResponse
@@ -333,6 +334,32 @@ class Controller:
 
         except requests.exceptions.RequestException as e:
             yield self.handle_worker_timeout(worker_addr)
+    
+    def worker_api_completions_v2(self, request: Request):
+        params = await request.json()
+        worker_addr = self.get_worker_address(params["model"])
+        target = f"{worker_addr}/v1/completions"
+
+        if not worker_addr:
+            yield self.handle_no_worker(params)
+
+        try:
+            async with httpx.AsyncClient() as client:
+                print(f"Relaying request to {target}.")
+                async with client.stream('POST', target, headers=request.headers, json=params, params=request.query_params) as response:
+                    if response.status_code != 200:
+                        response_text = await response.aread()
+                        # print(f"Relay request failed with status code {response.status_code}: {response_text.decode()}")
+                        raise HTTPException(status_code=response.status_code, detail=response_text.decode())
+                    
+                    print(f"Received response with status code {response.status_code}.")
+                    async for chunk in response.aiter_bytes():
+                        if chunk:
+                            # print(f"Received chunk: {chunk.decode()}")
+                            yield chunk
+
+        except requests.exceptions.RequestException as e:
+            yield self.handle_worker_timeout(worker_addr)
 
 
 app = FastAPI()
@@ -405,6 +432,28 @@ async def worker_api_chat_completions(request: Request):
     params = await request.json()
     generator = controller.worker_api_chat_completions(params)
     return StreamingResponse(generator)
+
+
+
+# :: HERE -- added to map to vllm models
+@app.post("/v2/completions")
+async def worker_api_completions_v2(request: Request):
+    return StreamingResponse(
+        controller.worker_api_completions_v2(request),
+        status_code=200,
+        media_type="text/event-stream;charset=UTF-8"
+    )
+
+# :: HERE -- added to map to vllm models
+# @app.post("/v2/chat/completions")
+# async def worker_api_chat_completions_v2(request: Request):
+#     params = await request.json()
+#     generator = controller.worker_api_chat_completions(params)
+#     return StreamingResponse(generator)
+
+
+
+
 
 
 @app.post("/worker_get_status")
