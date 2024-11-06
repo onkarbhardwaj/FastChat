@@ -335,9 +335,9 @@ class Controller:
         except requests.exceptions.RequestException as e:
             yield self.handle_worker_timeout(worker_addr)
     
-    async def worker_api_completions_v2(self, request: Request, params):
+    async def openai_completions_relay(self, request: Request, params, endpoint):
         worker_addr = self.get_worker_address(params["model"])
-        target = f"{worker_addr}/v1/completions"
+        target = f"{worker_addr}{endpoint}"
 
         if not worker_addr:
             yield self.handle_no_worker(params)
@@ -438,18 +438,23 @@ async def worker_api_chat_completions(request: Request):
 @app.post("/v2/completions")
 async def worker_api_completions_v2(request: Request):
     params = await request.json()
+    endpoint = "/v1/completions"
     return StreamingResponse(
-        controller.worker_api_completions_v2(request, params),
+        controller.openai_completions_relay(request, params, endpoint),
         status_code=200,
         media_type="text/event-stream;charset=UTF-8"
     )
 
 # :: HERE -- added to map to vllm models
-# @app.post("/v2/chat/completions")
-# async def worker_api_chat_completions_v2(request: Request):
-#     params = await request.json()
-#     generator = controller.worker_api_chat_completions(params)
-#     return StreamingResponse(generator)
+@app.post("/v2/chat/completions")
+async def worker_api_chat_completions_v2(request: Request):
+    params = await request.json()
+    endpoint = "/v1/chat/completions"
+    return StreamingResponse(
+        controller.openai_completions_relay(request, params, endpoint),
+        status_code=200,
+        media_type="text/event-stream;charset=UTF-8"
+    )
 
 
 
