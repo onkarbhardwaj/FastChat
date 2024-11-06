@@ -335,7 +335,7 @@ class Controller:
         except requests.exceptions.RequestException as e:
             yield self.handle_worker_timeout(worker_addr)
     
-    def worker_api_completions_v2(self, request: Request, params):
+    async def worker_api_completions_v2(self, request: Request, params):
         worker_addr = self.get_worker_address(params["model"])
         target = f"{worker_addr}/v1/completions"
 
