@@ -14,7 +14,8 @@ ARG GH_TOKEN
 ARG GH_TOKEN_PUB
 
 RUN pip3 install --upgrade setuptools pip
-RUN python3.9 -m pip install --no-cache-dir -r requirements.txt
+# RUN python3.9 -m pip install --no-cache-dir -r requirements.txt
+RUN python3.9 -m pip install -r requirements.txt
 
 # For Dolomite Engine
 RUN python3.9 -m pip install flash-attn --no-build-isolation
