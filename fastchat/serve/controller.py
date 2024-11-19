@@ -120,7 +120,7 @@ class Controller:
         
         self.worker_info[worker_name].model_names.append(lora_name)
 
-        logger.info(f"LoRA registration done: {lora_name} registered to {worker_name}, {worker_status}")
+        logger.info(f"LoRA registration done: {lora_name} registered to {worker_name}")
         return True
 
     def get_worker_status(self, worker_name: str):
