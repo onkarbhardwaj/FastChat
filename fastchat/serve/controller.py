@@ -357,6 +357,11 @@ class Controller:
         worker_addr = self.get_worker_address(params["model"])
         target = f"{worker_addr}{endpoint}"
 
+        print("Worker Address : ", worker_addr)
+        print("Target : ", target)
+        print("Params : ", params)
+
+
         if not worker_addr:
             yield self.handle_no_worker(params)
 
