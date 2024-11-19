@@ -122,6 +122,25 @@ class Controller:
 
         logger.info(f"LoRA registration done: {lora_name} registered to {worker_name}")
         return True
+    
+    def deregister_lora(
+        self,
+        worker_name: str,
+        lora_name: bool
+    ):
+        if worker_name not in self.worker_info:
+            logger.info(f"Cannot deregister lora of unknown worker: {worker_name}")
+            return False
+        else:
+            logger.info(f"Deregistering LoRA of existing worker: {worker_name}")
+
+        try:
+            self.worker_info[worker_name].model_names.remove(lora_name)
+        except Exception as e:
+            logger.info(str(e))
+
+        logger.info(f"LoRA {lora_name} deregistered from {worker_name}")
+        return True
 
     def get_worker_status(self, worker_name: str):
         try:
@@ -401,6 +420,14 @@ async def register_worker(request: Request):
 async def register_lora(request: Request):
     data = await request.json()
     controller.register_lora(
+        data["worker_name"],
+        data["lora_name"]
+    )
+
+@app.post("/deregister_lora")
+async def deregister_lora(request: Request):
+    data = await request.json()
+    controller.deregister_lora(
         data["worker_name"],
         data["lora_name"]
     )

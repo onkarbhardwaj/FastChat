@@ -14,7 +14,7 @@ ARG GH_TOKEN_PUB
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 RUN python3.9 get-pip.py
 
-RUN pip3 install git+https://${GH_TOKEN_PUB}@github.com/onkarbhardwaj/FastChat.git@dolomite-sync#egg=fschat[fschat]
-RUN pip3 install git+https://${GH_TOKEN_PUB}@github.com/onkarbhardwaj/FastChat.git@dolomite-sync#egg=fschat[model_worker]
+RUN pip3 install git+https://${GH_TOKEN_PUB}@github.com/onkarbhardwaj/FastChat.git@dolomite#egg=fschat[fschat]
+RUN pip3 install git+https://${GH_TOKEN_PUB}@github.com/onkarbhardwaj/FastChat.git@dolomite#egg=fschat[model_worker]
 
 
