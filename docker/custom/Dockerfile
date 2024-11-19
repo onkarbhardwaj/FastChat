@@ -4,20 +4,17 @@ FROM nvidia/cuda:12.5.0-devel-ubuntu20.04
 
 RUN DEBIAN_FRONTEND=noninteractive \
   apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y python3.9 python3-pip git curl vim iputils-ping \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y python3.9 python3.9-distutils curl python3-pip git vim iputils-ping \
   && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /app
-COPY . /app
 
 ARG GH_TOKEN
 ARG GH_TOKEN_PUB
 
-RUN pip3 install --upgrade setuptools pip
-# RUN python3.9 -m pip install --no-cache-dir -r requirements.txt
-RUN python3.9 -m pip install -r requirements.txt
 
-# For Dolomite Engine
-RUN python3.9 -m pip install flash-attn --no-build-isolation
-RUN python3.9 -m pip install tokenizers==0.19.1
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+RUN python3.9 get-pip.py
+
+RUN pip3 install git+https://${GH_TOKEN_PUB}@github.com/onkarbhardwaj/FastChat.git@dolomite-sync#egg=fschat[fschat]
+RUN pip3 install git+https://${GH_TOKEN_PUB}@github.com/onkarbhardwaj/FastChat.git@dolomite-sync#egg=fschat[model_worker]
+
 
