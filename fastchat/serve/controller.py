@@ -104,6 +104,24 @@ class Controller:
 
         logger.info(f"Register done: {worker_name}, {worker_status}")
         return True
+    
+    # HERE
+    def register_lora(
+        self,
+        worker_name: str,
+        lora_name: bool
+    ):
+        if worker_name not in self.worker_info:
+            logger.info(f"Cannot register lora to unknown worker: {worker_name}")
+            return False
+        else:
+            logger.info(f"Registering new LoRA to existing worker: {worker_name}")
+
+        
+        self.worker_info[worker_name].model_names.append(lora_name)
+
+        logger.info(f"LoRA registration done: {lora_name} registered to {worker_name}, {worker_status}")
+        return True
 
     def get_worker_status(self, worker_name: str):
         try:
@@ -343,7 +361,7 @@ class Controller:
             yield self.handle_no_worker(params)
 
         try:
-            async with httpx.AsyncClient() as client:
+            async with httpx.AsyncClient(timeout=240) as client:
                 print(f"Relaying request to {target}.")
                 async with client.stream('POST', target, headers=request.headers, json=params, params=request.query_params) as response:
                     if response.status_code != 200:
@@ -372,6 +390,14 @@ async def register_worker(request: Request):
         data["check_heart_beat"],
         data.get("worker_status", None),
         data.get("multimodal", False),
+    )
+
+@app.post("/register_lora")
+async def register_lora(request: Request):
+    data = await request.json()
+    controller.register_lora(
+        data["worker_name"],
+        data["lora_name"]
     )
 
 
